@@ -1,4 +1,7 @@
-
+/*
+ * Fitness Functions
+ * 
+ */
 public class Evaluators {
 	
 	public void CompareEvaluators(int[] input){
@@ -46,6 +49,7 @@ public class Evaluators {
 	}
 	
 	// Chunks array into pieces of size K and evaluates them
+	// TODO: tightly linked vs randomly linked
 	private double TrapFunction(int[] input, int k, double deceptionParam){
 		double sum = 0;
 		

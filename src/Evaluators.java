@@ -49,7 +49,7 @@ public class Evaluators {
 	}
 	
 	// Chunks array into pieces of size K and evaluates them
-	// TODO: tightly linked vs randomly linked
+	// TODO: tightly linked versus randomly linked
 	private double TrapFunction(int[] input, int k, double deceptionParam){
 		double sum = 0;
 		

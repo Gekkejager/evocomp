@@ -17,9 +17,18 @@ public class GeneticAlgorithm {
 
     public int[][] run(int bitArrayLength, int populationSize, int nGenerations, String fitnessFunction, String recombinationOperator) {
         int[][] currentPopulation = generateInitialPopulation(populationSize, bitArrayLength);
+        //int[][] nextGenerationPopulation = new int[populationSize][bitArrayLength];
         for (int i = 0; i < nGenerations; i++) {
-            currentPopulation = generateNextGeneration(currentPopulation, fitnessFunction, recombinationOperator);
+            int[][] nextGenerationPopulation = generateNextGeneration(currentPopulation, fitnessFunction, recombinationOperator);
             prettyPrintPopulation(sortPopulationByFitnessScore(currentPopulation, fitnessFunction), fitnessFunction);
+
+            // exit if converged
+            if(Arrays.deepEquals(currentPopulation, nextGenerationPopulation)) {
+                System.out.println("Converged.");
+                break;
+            }
+
+            currentPopulation = nextGenerationPopulation;
         }
 
         return currentPopulation;
@@ -27,13 +36,13 @@ public class GeneticAlgorithm {
 
     // generate a new population based on the fitness function and recombination operator
     private int[][] generateNextGeneration(int[][] parentPopulation, String fitnessFunction, String recombinationOperator) {
+        // shuffle population, generate offspring and combine the two
         int[][] shuffledParentPopulation = shufflePopulation(parentPopulation);
         int[][] offspringPopulation = generateOffspring(shuffledParentPopulation, recombinationOperator);
-
         int[][] combinedPopulation = append(shuffledParentPopulation, offspringPopulation);
 
+        // select the best from the population
         int[][] newPopulation = selectBestFromPopulation(combinedPopulation, parentPopulation.length, fitnessFunction);
-
         return newPopulation;
 
     }
@@ -158,8 +167,8 @@ public class GeneticAlgorithm {
 
     // Overload to set arrayLength default to 100
     private int[][] generateInitialPopulation(int populationSize) {
-        int bitStringLength = 100;
-        return generateInitialPopulation(populationSize, bitStringLength);
+        int bitArrayLength = 100;
+        return generateInitialPopulation(populationSize, bitArrayLength);
     }
 
     // Generates a initial starting population
@@ -211,46 +220,4 @@ public class GeneticAlgorithm {
         }
         return totalScore / population.length;
     }
-
-    /*public int[][] runPermutations(int populationSize, int bitArrayLength, String fitnessFunction, int nGenerations) {
-        int[][] currentPopulation = generateInitialPopulation(populationSize, bitArrayLength);
-        prettyPrintPopulation(sortPopulationByFitnessScore(currentPopulation, fitnessFunction), fitnessFunction);
-        for (int i = 0; i < nGenerations; i++) {
-            currentPopulation = setupAndRunSingleGeneration(currentPopulation, fitnessFunction);
-            prettyPrintPopulation(sortPopulationByFitnessScore(currentPopulation, fitnessFunction), fitnessFunction);
-        }
-//		prettyPrintPopulation(currentPopulation);
-        return currentPopulation;
-    }
-
-    private int[][] setupAndRunSingleGeneration(int[][] population, String fitnessFunction) {
-        int[][] sortedPopulation = sortPopulationByFitnessScore(population, fitnessFunction);
-        int[][] newPopulation = new int[sortedPopulation.length][sortedPopulation[0].length];
-        // Make use twice of the same for loop
-        for (int i = 0; i < sortedPopulation.length / 4; i++) {
-            // To add the new permutations...
-            int iPermutations[][] = permute(sortedPopulation[i * 2], sortedPopulation[i * 2 + 1]);
-            newPopulation[i * 2] = iPermutations[0];
-            newPopulation[i * 2 + 1] = iPermutations[1];
-            // ...and to add the best first half of the previous one
-            newPopulation[sortedPopulation.length / 2 + i * 2] = sortedPopulation[i * 2];
-            newPopulation[sortedPopulation.length / 2 + i * 2 + 1] = sortedPopulation[i * 2 + 1];
-        }
-        return newPopulation;
-    }
-
-    // TODO: This will change depending on whether 2X or UX is chosen this is a stub
-    // I think it should look somewhat similar to this
-    private int[][] permute(int[] sample1, int[] sample2) {
-        int[][] returnValue = new int[2][sample1.length];
-        for (int i = 0; i < sample1.length / 2; i++) {
-            returnValue[0][i] = sample1[i];
-            returnValue[1][i] = sample2[i];
-        }
-        for (int i = sample1.length / 2; i < sample1.length; i++) {
-            returnValue[0][i] = sample2[i];
-            returnValue[1][i] = sample1[i];
-        }
-        return returnValue;
-    }*/
 }

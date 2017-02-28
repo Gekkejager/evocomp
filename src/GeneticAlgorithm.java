@@ -22,9 +22,9 @@ public class GeneticAlgorithm {
             int[][] nextGenerationPopulation = generateNextGeneration(currentPopulation, fitnessFunction, recombinationOperator);
             prettyPrintPopulation(sortPopulationByFitnessScore(currentPopulation, fitnessFunction), fitnessFunction);
 
-            // exit if converged
+            // exit if no new offspring entered the population
             if(Arrays.deepEquals(currentPopulation, nextGenerationPopulation)) {
-                System.out.println("Converged.");
+                System.out.println("Break: No new offspring.");
                 break;
             }
 
@@ -78,32 +78,27 @@ public class GeneticAlgorithm {
         int[][] offspring = new int[population.length][population[0].length];
 
         for (int i = 0; i < population.length; i += 2) {
-            offspring[i] = recombine(population[i], population[i + 1], recombinationOperator);
-            offspring[i + 1] = recombine(population[i], population[i + 1], recombinationOperator);
+            int[][] children = recombine(population[i], population[i + 1], recombinationOperator);
+            offspring[i] = children[0];
+            offspring[i + 1] = children[1];
         }
 
         return offspring;
     }
 
-    // TODO recombination
-    private int[] recombine(int[] parent1, int[] parent2, String recombinationOperator) {
+    private int[][] recombine(int[] parent1, int[] parent2, String recombinationOperator) {
 
-        int[] child;
-
-        Recombinators recombinator = new Recombinators();
+        Recombinators recombine = new Recombinators();
 
         switch (recombinationOperator) {
-            case "TwoPointCrossOver":
-                child = recombinator.twoPointCrossover(parent1, parent2);
-                break;
-            case "UniformCrossOver":
-                child = recombinator.uniformCrossover(parent1, parent2);
-                break;
+            case "TwoPointCrossover":
+                return recombine.twoPointCrossover(parent1, parent2);
+            case "UniformCrossover":
+                return recombine.uniformCrossover(parent1, parent2);
             default:
                 throw new IllegalArgumentException("Invalid recombination operator: " + recombinationOperator);
         }
 
-        return child;
     }
 
     // select the best bitstrings from the population by a fitness function

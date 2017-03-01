@@ -15,15 +15,15 @@ public class GeneticAlgorithm {
         prettyPrintPopulation(sortedInitialPopulation, fitnessFunction);
     }
 
-    public int[][] run(int bitArrayLength, int populationSize, int nGenerations, String fitnessFunction, String recombinationOperator) {
+    public int[][] run(int bitArrayLength, int populationSize, int nGenerations, String fitnessFunction, String recombinationOperator, boolean randomlyLinked) {
         int[][] currentPopulation = generateInitialPopulation(populationSize, bitArrayLength);
         //int[][] nextGenerationPopulation = new int[populationSize][bitArrayLength];
         for (int i = 0; i < nGenerations; i++) {
-            int[][] nextGenerationPopulation = generateNextGeneration(currentPopulation, fitnessFunction, recombinationOperator);
+            int[][] nextGenerationPopulation = generateNextGeneration(currentPopulation, fitnessFunction, recombinationOperator, randomlyLinked);
             prettyPrintPopulation(sortPopulationByFitnessScore(currentPopulation, fitnessFunction), fitnessFunction);
 
             // exit if no new offspring entered the population
-            if(Arrays.deepEquals(currentPopulation, nextGenerationPopulation)) {
+            if (Arrays.deepEquals(currentPopulation, nextGenerationPopulation)) {
                 System.out.println("Break: No new offspring.");
                 break;
             }
@@ -35,10 +35,10 @@ public class GeneticAlgorithm {
     }
 
     // generate a new population based on the fitness function and recombination operator
-    private int[][] generateNextGeneration(int[][] parentPopulation, String fitnessFunction, String recombinationOperator) {
+    private int[][] generateNextGeneration(int[][] parentPopulation, String fitnessFunction, String recombinationOperator, boolean randomlyLinked) {
         // shuffle population, generate offspring and combine the two
         int[][] shuffledParentPopulation = shufflePopulation(parentPopulation);
-        int[][] offspringPopulation = generateOffspring(shuffledParentPopulation, recombinationOperator);
+        int[][] offspringPopulation = generateOffspring(shuffledParentPopulation, recombinationOperator, randomlyLinked);
         int[][] combinedPopulation = append(shuffledParentPopulation, offspringPopulation);
 
         // select the best from the population
@@ -74,11 +74,11 @@ public class GeneticAlgorithm {
     }
 
     // generate offspring from the parent population based on the recombination operator
-    private int[][] generateOffspring(int[][] population, String recombinationOperator) {
+    private int[][] generateOffspring(int[][] population, String recombinationOperator, boolean randomlyLinked) {
         int[][] offspring = new int[population.length][population[0].length];
 
         for (int i = 0; i < population.length; i += 2) {
-            int[][] children = recombine(population[i], population[i + 1], recombinationOperator);
+            int[][] children = recombine(population[i], population[i + 1], recombinationOperator, randomlyLinked);
             offspring[i] = children[0];
             offspring[i + 1] = children[1];
         }
@@ -86,19 +86,87 @@ public class GeneticAlgorithm {
         return offspring;
     }
 
-    private int[][] recombine(int[] parent1, int[] parent2, String recombinationOperator) {
+    private int[][] recombine(int[] parent1, int[] parent2, String recombinationOperator, boolean randomlyLinked) {
+
+        int[][] offspring;
+
+        // encode if randomly linked
+        if (randomlyLinked) {
+            parent1 = encodeRepresentation(parent1);
+            parent2 = encodeRepresentation(parent2);
+        }
 
         Recombinators recombine = new Recombinators();
 
         switch (recombinationOperator) {
             case "TwoPointCrossover":
-                return recombine.twoPointCrossover(parent1, parent2);
+                offspring = recombine.twoPointCrossover(parent1, parent2);
+                break;
             case "UniformCrossover":
-                return recombine.uniformCrossover(parent1, parent2);
+                offspring = recombine.uniformCrossover(parent1, parent2);
+                break;
             default:
                 throw new IllegalArgumentException("Invalid recombination operator: " + recombinationOperator);
         }
 
+        // decode offspring if randomly linked
+        if (randomlyLinked) {
+            offspring[0] = decodeRepresentation(offspring[0]);
+            offspring[0] = decodeRepresentation(offspring[0]);
+        }
+
+        return offspring;
+    }
+
+    protected static int[] randomlyLinkedOrder;
+
+    private int[] encodeRepresentation(int[] decodedSolution) {
+
+        int[] encodedSolution = new int[decodedSolution.length];
+
+        // generate shuffled order if not exists
+        if (this.randomlyLinkedOrder == null) {
+            this.randomlyLinkedOrder = generateRandomlyLinkedOrder(decodedSolution.length);
+        }
+
+        // put the solution in the new order
+        for (int i = 0; i < this.randomlyLinkedOrder.length; i++) {
+            encodedSolution[i] = decodedSolution[this.randomlyLinkedOrder[i]];
+        }
+
+        return encodedSolution;
+    }
+
+    private int[] decodeRepresentation(int[] encodedSolution) {
+
+        int[] decodedSolution = new int[encodedSolution.length];
+
+        // put the solution in the new order
+        for (int i = 0; i < this.randomlyLinkedOrder.length; i++) {
+            decodedSolution[this.randomlyLinkedOrder[i]] = encodedSolution[i];
+        }
+        return decodedSolution;
+    }
+
+    private int[] generateRandomlyLinkedOrder(int length) {
+
+        randomlyLinkedOrder = new int[length];
+
+        for (int i = 0; i < length; i++) {
+            randomlyLinkedOrder[i] = i;
+        }
+        // Implementing Fisher–Yates shuffle
+        // https://stackoverflow.com/questions/1519736/random-shuffling-of-an-array
+        Random rnd = ThreadLocalRandom.current();
+        for (int i = randomlyLinkedOrder.length - 1; i > 0; i--) {
+            int index = rnd.nextInt(i + 1);
+            // Simple swap
+            int a = randomlyLinkedOrder[index];
+            randomlyLinkedOrder[index] = randomlyLinkedOrder[i];
+            randomlyLinkedOrder[i] = a;
+        }
+
+        return randomlyLinkedOrder;
     }
 
     // select the best bitstrings from the population by a fitness function

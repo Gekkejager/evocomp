@@ -4,34 +4,43 @@ import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 /*
- * General algorithmic Functions
+ * Genetic algorithm framework
  * 
  * 
  */
 public class GeneticAlgorithm {
-    public void quickTest(int nSamples, String fitnessFunction) {
-        int arraySize = 12;
-        int[][] sortedInitialPopulation = sortPopulationByFitnessScore(generateInitialPopulation(nSamples, arraySize), fitnessFunction);
-        prettyPrintPopulation(sortedInitialPopulation, fitnessFunction);
-    }
-
-    public int[][] run(int bitArrayLength, int populationSize, int nGenerations, String fitnessFunction, String recombinationOperator, boolean randomlyLinked) {
+	
+	
+    public singleRunResults run(int bitArrayLength, int populationSize, int nGenerations, String fitnessFunction, String recombinationOperator, boolean randomlyLinked) {
+    	Evaluators fitnessFunctions = new Evaluators();
+    	boolean success = false;
+    	int genFirstHit = -1;
+    	int genConverge = -1;
+    	long start = System.currentTimeMillis();
         int[][] currentPopulation = generateInitialPopulation(populationSize, bitArrayLength);
-        //int[][] nextGenerationPopulation = new int[populationSize][bitArrayLength];
         for (int i = 0; i < nGenerations; i++) {
             int[][] nextGenerationPopulation = generateNextGeneration(currentPopulation, fitnessFunction, recombinationOperator, randomlyLinked);
-            prettyPrintPopulation(sortPopulationByFitnessScore(currentPopulation, fitnessFunction), fitnessFunction);
 
             // exit if no new offspring entered the population
             if (Arrays.deepEquals(currentPopulation, nextGenerationPopulation)) {
-                System.out.println("Break: No new offspring.");
+            	System.out.println(i);
                 break;
             }
-
+            
+            // if the first hit hasnt been updated yet and the first row has no 0's (so only 1's)
+            if(genFirstHit == -1 && fitnessFunctions.UniformlyScaledCountingOnesFunction(nextGenerationPopulation[0]) == bitArrayLength){
+            	genFirstHit = i;
+            }
+            if(genConverge == -1 && fitnessFunctions.UniformlyScaledCountingOnesFunction(nextGenerationPopulation[nextGenerationPopulation.length-1]) == bitArrayLength){
+            	genConverge = i;
+            	success = true;
+            }
+            
             currentPopulation = nextGenerationPopulation;
         }
-
-        return currentPopulation;
+//        fitnessFunctions.CompareEvaluators(currentPopulation[0]);
+        int CPUtime = (int)(System.currentTimeMillis() - start);
+        return new singleRunResults(success, genFirstHit, genConverge, 0, CPUtime);
     }
 
     // generate a new population based on the fitness function and recombination operator
@@ -58,7 +67,7 @@ public class GeneticAlgorithm {
     // shuffle in random order
     private int[][] shufflePopulation(int[][] population) {
 
-        // Implementing Fisher–Yates shuffle
+        // Implementing Fisher Yates shuffle
         // https://stackoverflow.com/questions/1519736/random-shuffling-of-an-array
         Random rnd = ThreadLocalRandom.current();
         for (int i = population.length - 1; i > 0; i--) {

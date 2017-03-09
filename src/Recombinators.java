@@ -15,7 +15,6 @@ public class Recombinators {
 
         int crossoverPoint1 = random.nextInt(parent1.length);
         int crossoverPoint2 = random.nextInt(parent1.length);
-
         int firstCrossoverPoint = Math.min(crossoverPoint1, crossoverPoint2);
         int secondCrossoverPoint = Math.max(crossoverPoint1, crossoverPoint2);
 

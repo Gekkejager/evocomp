@@ -8,12 +8,12 @@ public class Assignment1 {
 		int nGenerations = 100;
 		
 //		String fitnessFunction = "UniformlyScaledCountingOnesFunction";
-//		String fitnessFunction = "LinearlyScaledCountingOnesFunction";
+		String fitnessFunction = "LinearlyScaledCountingOnesFunction";
 //		String fitnessFunction = "DeceptiveTrapFunction";
-		String fitnessFunction = "NonDeceptiveTrapFunction";
+//		String fitnessFunction = "NonDeceptiveTrapFunction";
 
 		
-		boolean randomlyLinked = true;
+		boolean randomlyLinked = false;
 		
 		int nSimulations = 25;
 		

@@ -9,6 +9,14 @@ import java.util.concurrent.ThreadLocalRandom;
  * 
  */
 public class GeneticAlgorithm {
+	public void printpop(int[][] pop){
+		for (int i = 0; i < pop.length; i++) {
+			for (int j = 0; j < pop[i].length; j++) {
+				System.out.print(pop[i][j]);
+			}
+			System.out.print("\n");
+		}
+	}
 	// Ugly global var
     public singleRunResults run(int bitArrayLength, int populationSize, int nGenerations, String fitnessFunction, String recombinationOperator, boolean randomlyLinked) {
     	Dictionary alreadyEvaluated = new Dictionary();
@@ -37,6 +45,7 @@ public class GeneticAlgorithm {
             currentPopulation = nextGenerationPopulation;
         }
         int CPUtime = (int)(System.currentTimeMillis() - start);
+        printpop(currentPopulation);
         return new singleRunResults(success, genFirstHit, genConverge, alreadyEvaluated.missCounter, CPUtime);
     }
 

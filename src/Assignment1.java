@@ -6,20 +6,22 @@ public class Assignment1 {
 		
 		int bitArrayLength = 100;
 		int nGenerations = 100;
+//		boolean randomlyLinked = false;
+//		int nSimulations = 25;
+//		String[] recombinationOperators = {"UniformCrossover", "TwoPointCrossover"};
+//		int[] populationSizes = {50, 100, 250, 500};	
+
+		boolean randomlyLinked = true;
+		int nSimulations = 1;
+		String[] recombinationOperators = {"TwoPointCrossover"};
+		int[] populationSizes = {50};	
 		
 //		String fitnessFunction = "UniformlyScaledCountingOnesFunction";
 		String fitnessFunction = "LinearlyScaledCountingOnesFunction";
 //		String fitnessFunction = "DeceptiveTrapFunction";
 //		String fitnessFunction = "NonDeceptiveTrapFunction";
 
-		
-		boolean randomlyLinked = false;
-		
-		int nSimulations = 25;
-		
-		String[] recombinationOperators = {"UniformCrossover", "TwoPointCrossover"};
 
-		int[] populationSizes = {50, 100, 250, 500};
 
 		double[][][] results = new double[recombinationOperators.length][populationSizes.length][9];
 		

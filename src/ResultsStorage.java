@@ -57,7 +57,7 @@ public class ResultsStorage{
 		_fctEvalsSd = Math.sqrt(_fctEvalsSd / (double)results.length);
 		_CPUtimeSd = Math.sqrt(_CPUtimeSd / (double)results.length);
 		
-		double[] r = {_successes, _genFirstHitMean, _genFirstHitSd, _genConvergeMean, _genConvergeSd, _fctEvalsMean, _fctEvalsSd, _CPUtimeMean, _CPUtimeSd};
+		double[] r = {_successes, _genFirstHitMean, _genFirstHitSd, _genConvergeMean, _genConvergeSd, (double)totalFctEvals, _fctEvalsSd, _CPUtimeMean, _CPUtimeSd};
 		_results = r;
 	}
 	

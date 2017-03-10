@@ -9,7 +9,10 @@ import java.util.concurrent.ThreadLocalRandom;
  * 
  */
 public class GeneticAlgorithm {
+	// Ugly global var
+	private int functCounter;
     public singleRunResults run(int bitArrayLength, int populationSize, int nGenerations, String fitnessFunction, String recombinationOperator, boolean randomlyLinked) {
+    	functCounter = 0;
     	Evaluators fitnessFunctions = new Evaluators();
     	boolean success = false;
     	int genFirstHit = -1;
@@ -35,7 +38,7 @@ public class GeneticAlgorithm {
             currentPopulation = nextGenerationPopulation;
         }
         int CPUtime = (int)(System.currentTimeMillis() - start);
-        return new singleRunResults(success, genFirstHit, genConverge, 0, CPUtime);
+        return new singleRunResults(success, genFirstHit, genConverge, functCounter, CPUtime);
     }
 
     // generate a new population based on the fitness function and recombination operator
@@ -208,7 +211,9 @@ public class GeneticAlgorithm {
         Evaluators fitnessFunctions = new Evaluators();
         double ranks[][] = new double[population.length][2];
         for (int i = 0; i < population.length; i++) {
+        	functCounter++;
             switch (fitnessFunction) {
+            
                 case "UniformlyScaledCountingOnesFunction":
                     ranks[i][0] = fitnessFunctions.UniformlyScaledCountingOnesFunction(population[i]);
                     ranks[i][1] = i;
@@ -268,6 +273,7 @@ public class GeneticAlgorithm {
         Evaluators fitnessFunctions = new Evaluators();
         double totalScore = 0;
         for (int i = 0; i < population.length; i++) {
+        	functCounter++;
             switch (fitnessFunction) {
                 case "UniformlyScaledCountingOnesFunction":
                     totalScore += fitnessFunctions.UniformlyScaledCountingOnesFunction(population[i]);

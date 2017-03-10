@@ -6,8 +6,11 @@ public class Evaluators {
 	
 	// Counts the number of ones
 	public double UniformlyScaledCountingOnesFunction(int[] input){
+		if(input[100] != 0){
+			return (double)input[100];
+		}
 		double counter = 0;
-		for(int i = 0; i < input.length; i++){
+		for(int i = 0; i < input.length - 1; i++){
 			if(input[i] == 1)
 				counter++;
 		}
@@ -16,8 +19,11 @@ public class Evaluators {
 	
 	// Sums the indices of the ones
 	public double LinearlyScaledCountingOnesFunction(int[] input){
+		if(input[100] != 0){
+			return (double)input[100];
+		}
 		double sum = 0;
-		for(int i = 0; i < input.length; i++){
+		for(int i = 0; i < input.length - 1; i++){
 			if(input[i] == 1)
 				sum += i + 1;
 		}
@@ -43,9 +49,12 @@ public class Evaluators {
 	
 	// Chunks array into pieces of size K and evaluates them
 	private double TrapFunction(int[] input, int k, double deceptionParam){
+		if(input[100] != 0){
+			return (double)input[100];
+		}
 		double sum = 0;
 		
-		for(int i=0; i < Math.floor(input.length/(double) k); i++){
+		for(int i=0; i < Math.floor((input.length - 1)/(double) k); i++){
 			int subArray[] = new int[k];
 			for(int j=0; j < k; j++){
 				subArray[j] = input[i*k + j];

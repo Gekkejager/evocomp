@@ -22,7 +22,7 @@ public class GeneticAlgorithm {
         for (int i = 0; i < nGenerations; i++) {
             int[][] nextGenerationPopulation = generateNextGeneration(currentPopulation, fitnessFunction, recombinationOperator, randomlyLinked);
             // exit if no new offspring entered the population
-            if (Arrays.deepEquals(currentPopulation, nextGenerationPopulation)) {
+            if (Arrays.deepEquals(checkNullScores(currentPopulation), nextGenerationPopulation)) {
             	genConverge = i-1;
             	if(fitnessFunctions.UniformlyScaledCountingOnesFunction(nextGenerationPopulation[0]) == bitArrayLength){
             		success = true;
@@ -38,6 +38,7 @@ public class GeneticAlgorithm {
             currentPopulation = nextGenerationPopulation;
         }
         int CPUtime = (int)(System.currentTimeMillis() - start);
+       
         return new singleRunResults(success, genFirstHit, genConverge, functCounter, CPUtime);
     }
 
@@ -133,14 +134,14 @@ public class GeneticAlgorithm {
 
         // generate shuffled order if not exists
         if (this.randomlyLinkedOrder == null) {
-            this.randomlyLinkedOrder = generateRandomlyLinkedOrder(decodedSolution.length);
+            this.randomlyLinkedOrder = generateRandomlyLinkedOrder(decodedSolution.length - 1);
         }
 
         // put the solution in the new order
         for (int i = 0; i < this.randomlyLinkedOrder.length; i++) {
             encodedSolution[i] = decodedSolution[this.randomlyLinkedOrder[i]];
         }
-
+        encodedSolution[encodedSolution.length - 1] = decodedSolution[decodedSolution.length - 1];
         return encodedSolution;
     }
 
@@ -210,29 +211,45 @@ public class GeneticAlgorithm {
     private double[][] populationRanks(int[][] population, String fitnessFunction) {
         Evaluators fitnessFunctions = new Evaluators();
         double ranks[][] = new double[population.length][2];
-        for (int i = 0; i < population.length; i++) {
-        	functCounter++;
-            switch (fitnessFunction) {
-            
-                case "UniformlyScaledCountingOnesFunction":
-                    ranks[i][0] = fitnessFunctions.UniformlyScaledCountingOnesFunction(population[i]);
-                    ranks[i][1] = i;
-                    break;
-                case "LinearlyScaledCountingOnesFunction":
-                    ranks[i][0] = fitnessFunctions.LinearlyScaledCountingOnesFunction(population[i]);
-                    ranks[i][1] = i;
-                    break;
-                case "DeceptiveTrapFunction":
-                    ranks[i][0] = fitnessFunctions.DeceptiveTrapFunction(population[i]);
-                    ranks[i][1] = i;
-                    break;
-                case "NonDeceptiveTrapFunction":
-                    ranks[i][0] = fitnessFunctions.NonDeceptiveTrapFunction(population[i]);
-                    ranks[i][1] = i;
-                    break;
-                default:
-                    throw new IllegalArgumentException("Invalid fitness function: " + fitnessFunction);
-            }
+        for (int i = 0; i < population.length - 1; i++) {
+        	if(population[i][100] != 0){
+//        		System.out.print(population[i].length);
+        		ranks[i][0] = population[i][100];
+                ranks[i][1] = i;
+    		}
+        	else {
+        		functCounter++;
+        		int score;
+	            switch (fitnessFunction) {
+	            
+	                case "UniformlyScaledCountingOnesFunction":
+	                	score = (int)(10*fitnessFunctions.UniformlyScaledCountingOnesFunction(population[i]));
+	                	population[i][100] = score;
+	                    ranks[i][0] = score;
+	                    ranks[i][1] = i;
+	                    break;
+	                case "LinearlyScaledCountingOnesFunction":
+	                	score = (int)(10*fitnessFunctions.LinearlyScaledCountingOnesFunction(population[i]));
+	                	population[i][100] = score;
+	                    ranks[i][0] = score;
+	                    ranks[i][1] = i;
+	                    break;
+	                case "DeceptiveTrapFunction":
+	                	score = (int)(10*fitnessFunctions.DeceptiveTrapFunction(population[i]));
+	                	population[i][100] = score;
+	                    ranks[i][0] = score;
+	                    ranks[i][1] = i;
+	                    break;
+	                case "NonDeceptiveTrapFunction":
+	                	score = (int)(10*fitnessFunctions.NonDeceptiveTrapFunction(population[i]));
+	                	population[i][100] = score;
+	                    ranks[i][0] = score;
+	                    ranks[i][1] = i;
+	                    break;
+	                default:
+	                    throw new IllegalArgumentException("Invalid fitness function: " + fitnessFunction);
+	            }
+        	}
         }
         return ranks;
     }
@@ -245,9 +262,9 @@ public class GeneticAlgorithm {
 
     // Generates a initial starting population
     private int[][] generateInitialPopulation(int populationSize, int bitArrayLength) {
-        int initialPopulation[][] = new int[populationSize][bitArrayLength];
+        int initialPopulation[][] = new int[populationSize][bitArrayLength + 1];
         for (int i = 0; i < populationSize; i++) {
-            for (int j = 0; j < bitArrayLength; j++) {
+            for (int j = 0; j < bitArrayLength - 1; j++) {
                 initialPopulation[i][j] = (int) Math.round(Math.random());
             }
         }
@@ -257,7 +274,6 @@ public class GeneticAlgorithm {
 
     public void prettyPrintPopulation(int[][] population, String fitnessFunction) {
         System.out.println("***");
-        System.out.printf("Average score for this iteration: %.2f\n", averageScoreForPopulation(population, fitnessFunction));
         for (int i = 0; i < population.length; i++) {
             for (int j = 0; j < population[i].length; j++) {
                 System.out.print(population[i][j]);
@@ -267,30 +283,32 @@ public class GeneticAlgorithm {
             }
             System.out.print("\n");
         }
+        System.out.printf("Average score for this iteration: %.2f\n", averageScoreForPopulation(population, fitnessFunction));
+
     }
 
     private double averageScoreForPopulation(int[][] population, String fitnessFunction) {
         Evaluators fitnessFunctions = new Evaluators();
         double totalScore = 0;
         for (int i = 0; i < population.length; i++) {
-        	functCounter++;
-            switch (fitnessFunction) {
-                case "UniformlyScaledCountingOnesFunction":
-                    totalScore += fitnessFunctions.UniformlyScaledCountingOnesFunction(population[i]);
-                    break;
-                case "LinearlyScaledCountingOnesFunction":
-                    totalScore += fitnessFunctions.LinearlyScaledCountingOnesFunction(population[i]);
-                    break;
-                case "DeceptiveTrapFunction":
-                    totalScore += fitnessFunctions.DeceptiveTrapFunction(population[i]);
-                    break;
-                case "NonDeceptiveTrapFunction":
-                    totalScore += fitnessFunctions.NonDeceptiveTrapFunction(population[i]);
-                    break;
-                default:
-                    throw new IllegalArgumentException("Invalid fitness function: " + fitnessFunction);
-            }
+        	totalScore += population[i][100];
         }
         return totalScore / population.length;
+    }
+    
+//    private static int[] push(int[] array, int push) {
+//    	int[] longer = new int[array.length + 1];
+//        System.arraycopy(array, 0, longer, 0, array.length);
+//        longer[array.length] = push;
+//        return longer;
+//    }
+    
+    private int[][] checkNullScores(int[][] population){
+    	int[][] nullScores = new int[population.length][population[0].length];
+    	System.arraycopy(population, 0, nullScores, 0, population.length);
+    	for (int i = 0; i < nullScores.length; i++) {
+			nullScores[i][nullScores[i].length-1] = 0;
+		}
+    	return nullScores;
     }
 }

@@ -78,7 +78,7 @@ public class ResultsStorage{
 			String shortHandRecombinationOperator = recombinationOperators[i] == "UniformCrossover"? "UX": "2X";
 			System.out.printf("\t\\multirow{4}{*}{%s}\n", shortHandRecombinationOperator);
 			for (int j = 0; j < populationSizes.length; j++) {
-				System.out.printf("\t\t\t& %d  & %.0f/25 & %.2f (%.2f) & %.2f (%.2f) & %.2f (%.2f) & %.2f (%.2f) \\\\\n", populationSizes[j], results[i][j][0], results[i][j][1], results[i][j][2], results[i][j][3], results[i][j][4], results[i][j][5], results[i][j][6], results[i][j][7], results[i][j][8]);
+				System.out.printf("\t\t\t& %d  & %.0f/25 & %.2f (%.2f) & %.2f (%.2f) & %.0f (%.2f) & %.2f (%.2f) \\\\\n", populationSizes[j], results[i][j][0], results[i][j][1], results[i][j][2], results[i][j][3], results[i][j][4], results[i][j][5], results[i][j][6], results[i][j][7], results[i][j][8]);
 			}
 			System.out.println("\t\\hline");
 		}

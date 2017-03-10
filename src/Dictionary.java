@@ -1,6 +1,6 @@
 import java.util.HashMap;
 import java.util.Map;
-
+// cache to prevent too many function evals
 public class Dictionary {
 	public int missCounter = 0;
 	Map<String, Double> alreadyEvaluated = new HashMap<String, Double>();
@@ -15,7 +15,8 @@ public class Dictionary {
 	}
 	
 	public void put(int[] populationEntry, double score){
-		alreadyEvaluated.put(convertPopulationEntryToString(populationEntry), score);
+		String key = convertPopulationEntryToString(populationEntry);
+		alreadyEvaluated.put(key, score);
 	}
 
 	

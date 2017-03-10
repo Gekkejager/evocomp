@@ -65,10 +65,44 @@ public class ResultsStorage{
 		return _results;
 	}
 	
-	public static void latexReadyPrint(String fitnessFunction, double[][][] results, String[] recombinationOperators, int[] populationSizes){
+	public static void latexReadyPrint(String fitnessFunction, double[][][] results, String[] recombinationOperators, int[] populationSizes, boolean randomlyLinked){
+		String title;
+		
+		switch (fitnessFunction) {
+		case "UniformlyScaledCountingOnesFunction":
+			title = "Uniformly scaled counting ones function";
+			break;
+			
+		case "LinearlyScaledCountingOnesFunction":
+			title = "Linearly scaled counting ones function";
+			break;
+			
+		case "DeceptiveTrapFunction":
+			if(randomlyLinked){
+				title = "Deceptive trap function (randomly linked)";
+			}
+			else {
+				title = "Deceptive trap function (tightly linked)";	
+			}
+			break;
+			
+		case "NonDeceptiveTrapFunction":
+			if(randomlyLinked){
+				title = "Non-deceptive trap function (randomly linked)";
+			}
+			else {
+				title = "Non-deceptive trap function (tightly linked)";	
+			}
+			break;
+		default:
+			title = "No title";
+			break;
+		}
+		
+		
 		System.out.println("\\begin{tabular}{ |c|c|c|c|c|c|c| }");
 		System.out.println("\t\\hline");
-		System.out.printf("\t\\multicolumn{7}{|c|}{%s} \\\\\n", fitnessFunction);
+		System.out.printf("\t\\multicolumn{7}{|c|}{%s} \\\\\n", title);
 		System.out.println("\t\\hline");
 		System.out.println("\tCrossover & PopSize & Successes & Gen.(First Hit) & Gen.(Converge) & Fct Evals & CPU time \\\\");
 		
@@ -78,7 +112,7 @@ public class ResultsStorage{
 			String shortHandRecombinationOperator = recombinationOperators[i] == "UniformCrossover"? "UX": "2X";
 			System.out.printf("\t\\multirow{4}{*}{%s}\n", shortHandRecombinationOperator);
 			for (int j = 0; j < populationSizes.length; j++) {
-				System.out.printf("\t\t\t& %d  & %.0f/25 & %.2f (%.2f) & %.2f (%.2f) & %.2f (%.2f) & %.2f (%.2f) \\\\\n", populationSizes[j], results[i][j][0], results[i][j][1], results[i][j][2], results[i][j][3], results[i][j][4], results[i][j][5], results[i][j][6], results[i][j][7], results[i][j][8]);
+				System.out.printf("\t\t\t& %d  & %.0f/25 & %.2f (%.2f) & %.2f (%.2f) & %.0f (%.2f) & %.2f (%.2f) \\\\\n", populationSizes[j], results[i][j][0], results[i][j][1], results[i][j][2], results[i][j][3], results[i][j][4], results[i][j][5], results[i][j][6], results[i][j][7], results[i][j][8]);
 			}
 			System.out.println("\t\\hline");
 		}

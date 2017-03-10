@@ -9,16 +9,8 @@ import java.util.concurrent.ThreadLocalRandom;
  * 
  */
 public class GeneticAlgorithm {
-	public void printpop(int[][] pop){
-		for (int i = 0; i < pop.length; i++) {
-			for (int j = 0; j < pop[i].length; j++) {
-				System.out.print(pop[i][j]);
-			}
-			System.out.print("\n");
-		}
-	}
-	// Ugly global var
-    public singleRunResults run(int bitArrayLength, int populationSize, int nGenerations, String fitnessFunction, String recombinationOperator, boolean randomlyLinked) {
+
+	public singleRunResults run(int bitArrayLength, int populationSize, int nGenerations, String fitnessFunction, String recombinationOperator, boolean randomlyLinked) {
     	Dictionary alreadyEvaluated = new Dictionary();
     	Evaluators fitnessFunctions = new Evaluators();
     	boolean success = false;
@@ -31,21 +23,20 @@ public class GeneticAlgorithm {
             // exit if no new offspring entered the population
             if (Arrays.deepEquals(currentPopulation, nextGenerationPopulation)) {
             	genConverge = i-1;
-            	if(fitnessFunctions.UniformlyScaledCountingOnesFunction(nextGenerationPopulation[0], alreadyEvaluated) == bitArrayLength){
+            	if(onlyOnes(nextGenerationPopulation[0])){
             		success = true;
             	}
                 break;
             }
             
             // if the first hit hasnt been updated yet and the first row has no 0's (so only 1's)
-            if(genFirstHit == -1 && fitnessFunctions.UniformlyScaledCountingOnesFunction(nextGenerationPopulation[0], alreadyEvaluated) == bitArrayLength){
+            if(genFirstHit == -1 && onlyOnes(nextGenerationPopulation[0])){
             	genFirstHit = i;
             }
             
             currentPopulation = nextGenerationPopulation;
         }
         int CPUtime = (int)(System.currentTimeMillis() - start);
-        printpop(currentPopulation);
         return new singleRunResults(success, genFirstHit, genConverge, alreadyEvaluated.missCounter, CPUtime);
     }
 
@@ -74,7 +65,6 @@ public class GeneticAlgorithm {
     private int[][] shufflePopulation(int[][] population) {
 
         // Implementing Fisher Yates shuffle
-        // https://stackoverflow.com/questions/1519736/random-shuffling-of-an-array
         Random rnd = ThreadLocalRandom.current();
         for (int i = population.length - 1; i > 0; i--) {
             int index = rnd.nextInt(i + 1);
@@ -244,12 +234,6 @@ public class GeneticAlgorithm {
         return ranks;
     }
 
-    // Overload to set arrayLength default to 100
-    private int[][] generateInitialPopulation(int populationSize) {
-        int bitArrayLength = 100;
-        return generateInitialPopulation(populationSize, bitArrayLength);
-    }
-
     // Generates a initial starting population
     private int[][] generateInitialPopulation(int populationSize, int bitArrayLength) {
         int initialPopulation[][] = new int[populationSize][bitArrayLength];
@@ -259,5 +243,14 @@ public class GeneticAlgorithm {
             }
         }
         return initialPopulation;
+    }
+    
+    private boolean onlyOnes(int[] populationEntry){
+    	for (int i = 0; i < populationEntry.length; i++) {
+			if(populationEntry[i] == 0){
+				return false;
+			}
+		}
+    	return true;
     }
 }

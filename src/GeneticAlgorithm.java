@@ -38,7 +38,7 @@ public class GeneticAlgorithm {
             currentPopulation = nextGenerationPopulation;
         }
         int CPUtime = (int)(System.currentTimeMillis() - start);
-       
+        
         return new singleRunResults(success, genFirstHit, genConverge, functCounter, CPUtime);
     }
 
@@ -264,7 +264,7 @@ public class GeneticAlgorithm {
     private int[][] generateInitialPopulation(int populationSize, int bitArrayLength) {
         int initialPopulation[][] = new int[populationSize][bitArrayLength + 1];
         for (int i = 0; i < populationSize; i++) {
-            for (int j = 0; j < bitArrayLength - 1; j++) {
+            for (int j = 0; j < bitArrayLength; j++) {
                 initialPopulation[i][j] = (int) Math.round(Math.random());
             }
         }

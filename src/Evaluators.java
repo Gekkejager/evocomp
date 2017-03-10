@@ -6,7 +6,7 @@ public class Evaluators {
 	
 	// Counts the number of ones
 	public double UniformlyScaledCountingOnesFunction(int[] input){
-		if(input[100] != 0){
+		if(input.length == 101 && input[100] != 0){
 			return (double)input[100];
 		}
 		double counter = 0;

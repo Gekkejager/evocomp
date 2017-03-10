@@ -7,15 +7,17 @@ public class Assignment1 {
 		int bitArrayLength = 100;
 		int nGenerations = 100;
 		
-		String fitnessFunction = "UniformlyScaledCountingOnesFunction";
+//		String fitnessFunction = "UniformlyScaledCountingOnesFunction";
 //		String fitnessFunction = "LinearlyScaledCountingOnesFunction";
-		boolean randomlyLinked = false;
+//		String fitnessFunction = "DeceptiveTrapFunction";
+		String fitnessFunction = "NonDeceptiveTrapFunction";
+
 		
-		int nSimulations = 1;
+		boolean randomlyLinked = true;
 		
-//		String[] recombinationOperators = {"UniformCrossover", "TwoPointCrossover"};
-//		String[] recombinationOperators = {"TwoPointCrossover"};
-		String[] recombinationOperators = {"UniformCrossover"};
+		int nSimulations = 25;
+		
+		String[] recombinationOperators = {"UniformCrossover", "TwoPointCrossover"};
 
 		int[] populationSizes = {50, 100, 250, 500};
 

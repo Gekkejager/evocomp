@@ -9,8 +9,6 @@ import java.util.concurrent.ThreadLocalRandom;
  * 
  */
 public class GeneticAlgorithm {
-	
-	
     public singleRunResults run(int bitArrayLength, int populationSize, int nGenerations, String fitnessFunction, String recombinationOperator, boolean randomlyLinked) {
     	Evaluators fitnessFunctions = new Evaluators();
     	boolean success = false;
@@ -20,10 +18,12 @@ public class GeneticAlgorithm {
         int[][] currentPopulation = generateInitialPopulation(populationSize, bitArrayLength);
         for (int i = 0; i < nGenerations; i++) {
             int[][] nextGenerationPopulation = generateNextGeneration(currentPopulation, fitnessFunction, recombinationOperator, randomlyLinked);
-
             // exit if no new offspring entered the population
             if (Arrays.deepEquals(currentPopulation, nextGenerationPopulation)) {
-            	System.out.println(i);
+            	genConverge = i-1;
+            	if(fitnessFunctions.UniformlyScaledCountingOnesFunction(nextGenerationPopulation[0]) == bitArrayLength){
+            		success = true;
+            	}
                 break;
             }
             
@@ -31,14 +31,9 @@ public class GeneticAlgorithm {
             if(genFirstHit == -1 && fitnessFunctions.UniformlyScaledCountingOnesFunction(nextGenerationPopulation[0]) == bitArrayLength){
             	genFirstHit = i;
             }
-            if(genConverge == -1 && fitnessFunctions.UniformlyScaledCountingOnesFunction(nextGenerationPopulation[nextGenerationPopulation.length-1]) == bitArrayLength){
-            	genConverge = i;
-            	success = true;
-            }
             
             currentPopulation = nextGenerationPopulation;
         }
-//        fitnessFunctions.CompareEvaluators(currentPopulation[0]);
         int CPUtime = (int)(System.currentTimeMillis() - start);
         return new singleRunResults(success, genFirstHit, genConverge, 0, CPUtime);
     }

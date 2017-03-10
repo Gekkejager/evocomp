@@ -30,15 +30,15 @@ public class ResultsStorage{
 			if(results[i]._success){
 				_successes += 1; 
 				totalGenFirstHits += results[i]._genFirstHit;
-				totalGenConverges += results[i]._genConverges;
 				counter++;
 			}
+			totalGenConverges += results[i]._genConverges;
 			totalFctEvals += results[i]._fctEvals;
 			totalCPUtime += results[i]._CPUtime;
 		}
 		
 		_genFirstHitMean = (double)totalGenFirstHits / (double)counter;
-		_genConvergeMean = (double)totalGenConverges / (double)counter;
+		_genConvergeMean = (double)totalGenConverges / (double)results.length;
 		_fctEvalsMean = (double)totalFctEvals / (double)results.length;
 		_CPUtimeMean = (double)totalCPUtime / (double)results.length;
 		
@@ -53,7 +53,7 @@ public class ResultsStorage{
 		}
 		
 		_genFirstHitSd = Math.sqrt(_genFirstHitSd / (double)counter);
-		_genConvergeSd = Math.sqrt(_genConvergeSd / (double)counter);
+		_genConvergeSd = Math.sqrt(_genConvergeSd / (double)results.length);
 		_fctEvalsSd = Math.sqrt(_fctEvalsSd / (double)results.length);
 		_CPUtimeSd = Math.sqrt(_CPUtimeSd / (double)results.length);
 		

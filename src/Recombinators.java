@@ -1,17 +1,11 @@
 import java.util.Random;
 
-/**
- * Created by Dennis on 27/02/2017.
- */
 public class Recombinators {
-
+	
     private Random random = new Random();
 
     public int[][] twoPointCrossover(int[] parent1, int[] parent2) {
         int[][] offspring = new int[2][parent1.length];
-
-        offspring[0] = parent1;
-        offspring[1] = parent2;
 
         int crossoverPoint1 = random.nextInt(parent1.length);
         int crossoverPoint2 = random.nextInt(parent1.length);
@@ -25,7 +19,7 @@ public class Recombinators {
             offspring[0][i] = (crossover) ? parent1[i] : parent2[i];
             offspring[1][i] = (crossover) ? parent2[i] : parent1[i];
         }
-
+  
         return offspring;
     }
 

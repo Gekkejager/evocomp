@@ -4,13 +4,6 @@
  */
 public class Evaluators {
 	
-	public void CompareEvaluators(int[] input){
-		System.out.printf("Uniformly Scaled Counting Ones Function: %.2f\n", UniformlyScaledCountingOnesFunction(input));
-//		System.out.printf("Linearly Scaled Counting Ones Function: %.2f\n", LinearlyScaledCountingOnesFunction(input));
-//		System.out.printf("Deceptive Trap Function: %.2f\n", DeceptiveTrapFunction(input));
-//		System.out.printf("Non-deceptive Trap Function: %.2f\n", NonDeceptiveTrapFunction(input));
-	}
-	
 	// Counts the number of ones
 	public double UniformlyScaledCountingOnesFunction(int[] input){
 		double counter = 0;
